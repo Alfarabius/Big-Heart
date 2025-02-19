@@ -1,23 +1,39 @@
 using UnityEngine;
+using DG.Tweening;
 
 public class BreathingAnimation : MonoBehaviour
 {
-    [SerializeField] private float amplitude = 0.1f;
-    [SerializeField] private float speed = 1.0f;
-    
+    [SerializeField] private float breathInDuration = 1.5f;
+    [SerializeField] private float breathOutDuration = 2f;
+    [SerializeField] private float breathAmplitude = 0.1f;
+
+    private Transform _targetTransform;
+    private Sequence _breathSequence;
     private Vector3 _initialScale;
-    private float _timeCounter;
-    
+
     private void Start()
     {
-        _initialScale = transform.localScale;
+        _targetTransform = GetComponent<Transform>();
+        _initialScale = _targetTransform.localScale;
+        CreateBreathSequence();
     }
 
-    private void Update()
+    private void OnDestroy()
     {
-        _timeCounter += Time.deltaTime;
-        
-        float scaleChange = Mathf.Sin(_timeCounter * speed) * amplitude;
-        transform.localScale = _initialScale + new Vector3(scaleChange, scaleChange, scaleChange);
+        _breathSequence.Kill();
+    }
+
+    private void CreateBreathSequence()
+    {
+        _breathSequence = DOTween.Sequence();
+
+        float scaleMultiplier = 1 + breathAmplitude;
+        Vector3 maxScale = new Vector3(_initialScale.x * scaleMultiplier, _initialScale.y * scaleMultiplier, _initialScale.z);
+
+        _breathSequence.Append(_targetTransform.DOScale(maxScale, breathInDuration).SetEase(Ease.InOutSine));
+
+        _breathSequence.Append(_targetTransform.DOScale(_initialScale, breathOutDuration).SetEase(Ease.InOutSine));
+
+        _breathSequence.SetLoops(-1, LoopType.Yoyo);
     }
 }

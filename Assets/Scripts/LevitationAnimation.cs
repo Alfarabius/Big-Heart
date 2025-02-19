@@ -1,32 +1,37 @@
 using UnityEngine;
 
-public class LevitationAnimation : MonoBehaviour
+public class SpriteLevitation : MonoBehaviour
 {
-    [SerializeField] private float amplitudeX = 0.5f;
-    [SerializeField] private float amplitudeY = 0.5f;
-    [SerializeField] private float speedX = 0.5f;
-    [SerializeField] private float speedY = 0.5f;
+    [SerializeField] private float levitationHeight = 0.5f;
+    [SerializeField] private float levitationDistanceX = 0.2f;
+    [SerializeField] private float levitationSpeedX = 2.0f;
+    [SerializeField] private float levitationSpeedY = 1.0f;
+    [SerializeField] private float randomOffsetMagnitude = 0.05f;
+    [SerializeField] private float lerpSpeed = 5.0f;
 
     private Vector3 _initialPosition;
-    private float _timeCounterX;
-    private float _timeCounterY;
+    private Vector3 _targetPosition;
 
     private void Start()
     {
-        _initialPosition = transform.position;
-        _timeCounterX = Random.Range(0f, 100f);
-        _timeCounterY = Random.Range(0f, 100f);
+        _initialPosition = transform.localPosition;
+        _targetPosition = CalculateNewTargetPosition();
     }
 
     private void Update()
     {
-        _timeCounterX += Time.deltaTime * speedX;
-        _timeCounterY += Time.deltaTime * speedY;
+        _targetPosition = CalculateNewTargetPosition();
+        transform.localPosition = Vector3.Lerp(transform.localPosition, _targetPosition, Time.deltaTime * lerpSpeed);
+    }
 
-        float offsetX = Mathf.PerlinNoise(_timeCounterX, 0) * 2 - 1;
-        float offsetY = Mathf.PerlinNoise(0, _timeCounterY) * 2 - 1;
+    private Vector3 CalculateNewTargetPosition()
+    {
+        float offsetX = Mathf.Sin(Time.time * levitationSpeedX) * levitationDistanceX;
+        float offsetY = Mathf.Cos(Time.time * levitationSpeedY) * levitationHeight;
 
-        transform.position = _initialPosition + new Vector3(offsetX * amplitudeX, offsetY * amplitudeY, 0);
+        float randomOffsetX = Random.Range(randomOffsetMagnitude, randomOffsetMagnitude * 2f);
+        float randomOffsetY = Random.Range(randomOffsetMagnitude, randomOffsetMagnitude * 2f);
+
+        return _initialPosition + new Vector3(offsetX + randomOffsetX, offsetY + randomOffsetY, 0f);
     }
 }
-
