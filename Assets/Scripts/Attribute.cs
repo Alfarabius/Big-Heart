@@ -38,6 +38,7 @@ public class Attribute : MonoBehaviour
         while (_isRound)
         {
             yield return new WaitForSeconds(interval);
+            // move view
             effect.ApplyEffect();
         }
     }
