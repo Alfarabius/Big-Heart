@@ -58,9 +58,9 @@ namespace Assets.Scripts.InventorySystem
                 _objSelected.transform.position = _startPositionItem;
             } else
             {
-                var slotType = raycastCollider.transform.gameObject.GetComponent<InventorySlot>().SlotType;
+                var slot = raycastCollider.transform.gameObject.GetComponent<InventorySlot>();
                 var typeItem = _objSelected.gameObject.GetComponent<BaseItemMono>();
-                if (!slotType.Contains(typeItem.GetSlotType()))
+                if (slot.Item != null || !slot.SlotType.Contains(typeItem.GetSlotType()))
                 {
                     _objSelected.transform.position = _startPositionItem;
                 }
