@@ -339,7 +339,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 371219713}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 45f75314b26582a428932ef3b9993197, type: 3}
+  m_Script: {fileID: 11500000, guid: f9a8cb89c0584c02b98c595173579367, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &453934200
@@ -425,8 +425,7 @@ Transform:
   m_LocalPosition: {x: -5, y: 0, z: 5}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 883986188}
+  m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &453934203
@@ -847,10 +846,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentValue: 0
   maxValue: 100
-  progressBar: {fileID: 547747319}
-  progressIsComplete:
-    m_PersistentCalls:
-      m_Calls: []
+  positiveProgressBar: {fileID: 0}
+  negativeProgressBar: {fileID: 0}
 --- !u!1 &575022949
 GameObject:
   m_ObjectHideFlags: 0
@@ -1499,7 +1496,7 @@ GameObject:
   - component: {fileID: 883986188}
   - component: {fileID: 883986187}
   m_Layer: 0
-  m_Name: Inventory
+  m_Name: InventoryService
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1526,12 +1523,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 883986186}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -5, y: 0, z: 5}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 453934202}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1034048253
 GameObject:
@@ -1906,10 +1903,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentValue: 0
   maxValue: 100
-  progressBar: {fileID: 1272538054}
-  progressIsComplete:
-    m_PersistentCalls:
-      m_Calls: []
+  positiveProgressBar: {fileID: 0}
+  negativeProgressBar: {fileID: 0}
 --- !u!1 &1278632528
 GameObject:
   m_ObjectHideFlags: 0
@@ -5542,7 +5537,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ec24127d03e41f88a79f535d7ea5daf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  roundsConfig: {fileID: 11400000, guid: eac5a6c0fbe45854d89eae68757a08a3, type: 2}
+  roundConfig: {fileID: 11400000, guid: eac5a6c0fbe45854d89eae68757a08a3, type: 2}
   inventoryConfig: {fileID: 11400000, guid: 07536a4eeef642d46bc1a11bdaf85fa6, type: 2}
 --- !u!4 &1323633507
 Transform:
@@ -5775,3 +5770,4 @@ SceneRoots:
   - {fileID: 453934202}
   - {fileID: 575022953}
   - {fileID: 1323633507}
+  - {fileID: 883986188}
