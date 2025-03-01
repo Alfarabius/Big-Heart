@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Services
 {
-    public class SaveLoadService : BaseServiceSingleton<SaveLoadService>
+    public class SaveLoadService : BaseServiceSingleton<SaveLoadService>, ISaveLoadSystem
     {
         private static string SavePath => Application.persistentDataPath + "/Assets/SaveLoadData" + "/game_save.json";
         public override void Init()
@@ -14,7 +14,7 @@ namespace Services
             Debug.Log($"SaveLoadService Initializing. Save path: {SavePath}");
         }
 
-        public static void Save(ISaveLoadObject objectToSave)
+        public void Save(ISaveLoadObject objectToSave)
         {
             GameSaveData saveData;
 
@@ -41,22 +41,22 @@ namespace Services
             Debug.Log($"[SaveSystem] Данные {key} сохранены.");
         }
         
-        public static void Load(ISaveLoadObject obj)
+        public void Load(ISaveLoadObject objectToLoad)
         {
             if (!File.Exists(SavePath))
             {
-                Debug.LogWarning($"[SaveSystem] Файл сохранения не найден. Используется новое сохранение для {obj.SaveKey}.");
+                Debug.LogWarning($"[SaveSystem] Файл сохранения не найден. Используется новое сохранение для {objectToLoad.SaveKey}.");
                 return;
             }
 
             string json = File.ReadAllText(SavePath);
             GameSaveData saveData = JsonUtility.FromJson<GameSaveData>(json);
 
-            string key = obj.SaveKey;
+            string key = objectToLoad.SaveKey;
             if (saveData.Data.TryGetValue(key, out string jsonData))
             {
-                object data = JsonUtility.FromJson(jsonData, obj.GetSaveData().GetType());
-                obj.LoadFromSaveData(data);
+                object data = JsonUtility.FromJson(jsonData, objectToLoad.GetSaveData().GetType());
+                objectToLoad.LoadFromSaveData(data);
                 Debug.Log($"[SaveSystem] {key} загружен.");
             }
             else

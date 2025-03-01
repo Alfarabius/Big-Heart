@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Services
 {
@@ -7,6 +8,7 @@ namespace Services
     {
         public Action<float> OnDatePositiveProgressUpdate;
         public Action<float> OnDateNegativeProgressUpdate;
+        public Action<float> OnAddPositiveEffect;
         
         public override void Init()
         {

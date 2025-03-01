@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using ItemSystem;
 using UnityEngine;
 
@@ -19,12 +20,12 @@ namespace Services
             Debug.Log("ItemService initialized");
         }
 
-        public async void CreateItem(string itemId, Vector3 position = default, Transform parent = null)
+        public async Task<ItemMono> CreateItem(string itemId, Vector3 position = default, Transform parent = null)
         {
             if (ContainsItem(itemId))
             {
                 Debug.LogWarning($"[ItemService] Предмет {itemId} уже создан.");
-                return;
+                return GetItem(itemId);
             }
             
             try
@@ -32,11 +33,14 @@ namespace Services
                 var item = await _itemFactory.CreateItemAsync(itemId, position, parent);
                 RegisterItem(item);
                 Debug.Log($"[ItemService] Предмет {itemId} создан.");
+                return item;
             }
             catch (Exception e)
             {
                 Debug.LogError($"Failed to create item, error: {e}");
             }
+
+            return null;
         }
 
         public void DestroyItem(string itemId)

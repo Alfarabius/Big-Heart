@@ -841,13 +841,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 547747317}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a1cb6caa04c03540bd29df6f3872757, type: 3}
+  m_Script: {fileID: 11500000, guid: daa331c805414ac6ac6e4d670a32ea86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentValue: 0
-  maxValue: 100
-  positiveProgressBar: {fileID: 0}
-  negativeProgressBar: {fileID: 0}
 --- !u!1 &575022949
 GameObject:
   m_ObjectHideFlags: 0
@@ -1898,13 +1894,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1272538052}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a1cb6caa04c03540bd29df6f3872757, type: 3}
+  m_Script: {fileID: 11500000, guid: de6589f26581414d8d5b0452c1d71b43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentValue: 0
-  maxValue: 100
-  positiveProgressBar: {fileID: 0}
-  negativeProgressBar: {fileID: 0}
 --- !u!1 &1278632528
 GameObject:
   m_ObjectHideFlags: 0

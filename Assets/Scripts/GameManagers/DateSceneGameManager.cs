@@ -1,24 +1,66 @@
 ﻿using System;
 using ItemSystem;
 using Services;
+using UnityEngine;
 
 namespace Rounds
 {
     public class DateSceneGameManager : BaseGameManager
     {
-        private float _roundDuration;
-        private float _currentRoundTime;
         private RoundConfig _config;
+        private float _currentPositiveProgress;
+        private float _currentNegativeProgress;
+        
+        public float CurrentNegativeProgress
+        {
+            get => _currentNegativeProgress;
+            private set
+            {
+                _currentNegativeProgress = Math.Clamp(value, 0, 100);
+                EventService.Instance.OnDateNegativeProgressUpdate(_currentNegativeProgress);
+                if (_currentNegativeProgress >= 100)
+                {
+                    EndDate();
+                }
+            }
+        }
+
+        public float CurrentPositiveProgress
+        {
+            get => _currentPositiveProgress;
+            private set
+            {
+                _currentPositiveProgress = Math.Clamp(value, 0, 100);
+                if (_currentPositiveProgress <= 100)
+                {
+                    EventService.Instance.OnDatePositiveProgressUpdate(_currentPositiveProgress);
+                }
+            }
+        }
         
         private void Awake()
         {
             _config = ConfigService.Instance.roundConfig;
         }
-        
-        protected override void Start()
+
+        private void OnEnable()
+        {
+            EventService.Instance.OnAddPositiveEffect += AddingPositiveProgress;
+        }
+
+        private void OnDisable()
+        {
+            EventService.Instance.OnAddPositiveEffect -= AddingPositiveProgress;
+        }
+
+        protected override async void Start()
         {
             base.Start();
             Initialization.Initialize();
+            await ItemService.Instance.CreateItem("FirstPerfume");
+            InventoryService.Instance.EquipItem("FirstPerfume");
+            await ItemService.Instance.CreateItem("RichPerfume");
+            InventoryService.Instance.EquipItem("RichPerfume");
             StartDate();
         }
         
@@ -32,15 +74,27 @@ namespace Rounds
 
         private void StartDate()
         {
-            ApplyEffects(effect => effect.OnDateStart());
+            // запускаем заполнение негативного прогресса
+            CoroutineService.Instance.RunRepeatingCoroutine(AddingNegativeProgress, 1f, () => GameState != GameState.Running);
+            // запускаем действия эффектов у айтемов
+            ApplyEffectsOnItems(effect => effect.OnDateStart());
         }
         
         public void EndDate()
         {
-            ApplyEffects(effect => effect.OnDateEnd());
+            // останавливаем действие эффектов у айтемов
+            ApplyEffectsOnItems(effect => effect.OnDateEnd());
+            GameState = GameState.Ending;
+            Debug.Log("Round date end");
         }
+        
+        private void AddingPositiveProgress(float value) =>
+            CurrentPositiveProgress += value;
+        
+        private void AddingNegativeProgress() =>
+            CurrentNegativeProgress += _config.negativeProgressInSecond;
 
-        private void ApplyEffects(Action<IEffect> effectAction)
+        private void ApplyEffectsOnItems(Action<IEffect> effectAction)
         {
             var items = InventoryService.Instance.Items;
             foreach (var item in items)

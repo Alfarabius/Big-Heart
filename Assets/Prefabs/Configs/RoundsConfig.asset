@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44cb9209c5e64406a5a11874b77912b9, type: 3}
   m_Name: RoundsConfig
   m_EditorClassIdentifier: 
-  dateDuration: 15
+  negativeProgressInSecond: 5

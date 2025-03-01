@@ -19,12 +19,10 @@ namespace ItemSystem
         
         public void OnEquip()
         {
-            throw new System.NotImplementedException();
         }
 
         public void OnUnEquip()
         {
-            throw new System.NotImplementedException();
         }
 
         public void OnDateStart()
@@ -40,7 +38,7 @@ namespace ItemSystem
 
         public void PeriodicEffect()
         {
-            EventService.Instance.OnDatePositiveProgressUpdate(_itemConfig.effectValue);
+            EventService.Instance.OnAddPositiveEffect(_itemConfig.effectValue);
         }
     }
 }

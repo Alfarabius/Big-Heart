@@ -2,7 +2,6 @@
 using ItemSystem;
 using SaveLoadSystem;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Services
 {
@@ -56,6 +55,17 @@ namespace Services
 
                 _items[i].transform.position = newPosition;
             }
+        }
+
+        public bool EquipItem(string itemId)
+        {
+            if (!ItemService.Instance.ContainsItem(itemId))
+            {
+                return false;
+            }
+            
+            EquipItem(ItemService.Instance.GetItem(itemId));
+            return true;
         }
 
         public bool EquipItem(ItemMono item)
