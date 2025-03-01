@@ -41,6 +41,10 @@ namespace Rounds
         private void Awake()
         {
             _config = ConfigService.Instance.roundConfig;
+            if (_config == null)
+            {
+                Debug.LogError("No config found for DateSceneGameManager!");
+            }
         }
 
         private void OnEnable()

@@ -7,7 +7,7 @@ namespace Services
 {
     public class ConfigService : BaseServiceSingleton<ConfigService> 
     {
-        [FormerlySerializedAs("roundsConfig")] public RoundConfig roundConfig;
+        public RoundConfig roundConfig;
         public InventoryConfig inventoryConfig;
 
         public override void Init()

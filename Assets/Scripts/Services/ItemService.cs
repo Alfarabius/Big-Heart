@@ -22,25 +22,33 @@ namespace Services
 
         public async Task<ItemMono> CreateItem(string itemId, Vector3 position = default, Transform parent = null)
         {
-            if (ContainsItem(itemId))
+            if (_itemsById.TryGetValue(itemId, out var existingItem))
             {
-                Debug.LogWarning($"[ItemService] Предмет {itemId} уже создан.");
-                return GetItem(itemId);
+                if (parent == null || existingItem.transform.parent == parent)
+                {
+                    Debug.LogWarning($"[ItemService] Предмет {itemId} уже существует в {parent?.name ?? "сцене"}.");
+                    return existingItem;
+                }
             }
-            
+
             try
             {
                 var item = await _itemFactory.CreateItemAsync(itemId, position, parent);
+                
+                if (item == null)
+                {
+                    Debug.LogError($"[ItemService] Не удалось создать предмет {itemId}, item == null.");
+                    return null;
+                }
+
                 RegisterItem(item);
-                Debug.Log($"[ItemService] Предмет {itemId} создан.");
                 return item;
             }
             catch (Exception e)
             {
-                Debug.LogError($"Failed to create item, error: {e}");
+                Debug.LogError($"[ItemService] Ошибка создания предмета {itemId}: {e}");
+                return null;
             }
-
-            return null;
         }
 
         public void DestroyItem(string itemId)
