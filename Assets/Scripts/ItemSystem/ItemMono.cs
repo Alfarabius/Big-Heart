@@ -25,20 +25,13 @@ namespace ItemSystem
                 return;
             }
 
-            _itemService = ItemService.Instance;
-            _itemService.RegisterItem(this);
             _animator = GetComponent<Animator>();
             var view = GetComponentInChildren<ItemView>();
             if (view != null)
             {
                 view.Init(itemConfig);
             }
-            _effect = new PerfumeEffect(_animator, itemConfig);
-        }
-
-        private void OnDestroy()
-        {
-            _itemService.UnregisterItem(ItemId);
+            _effect = new CommonEffect(_animator, itemConfig);
         }
     }
 }

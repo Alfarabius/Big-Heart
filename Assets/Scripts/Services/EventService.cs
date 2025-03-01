@@ -1,22 +1,19 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Services
 {
-    public static class EventService
+    public class EventService : BaseServiceSingleton<EventService>
     {
-        public static event Action<float> OnDateProgressChanged;
-        public static event Action OnDateEnd;
-
-        public static void UpdateDateProgress(float progress)
+        public Action<float> OnDatePositiveProgressUpdate;
+        public Action<float> OnDateNegativeProgressUpdate;
+        public Action<float> OnAddPositiveEffect;
+        
+        public override void Init()
         {
-            OnDateProgressChanged?.Invoke(progress);
-        }
-
-        public static void DateEnd()
-        {
-            OnDateEnd?.Invoke();
-            Debug.Log("DateEnd");
+            base.Init();
+            Debug.Log("EventService initialized");
         }
     }
 }

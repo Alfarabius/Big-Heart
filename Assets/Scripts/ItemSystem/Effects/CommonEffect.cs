@@ -1,18 +1,17 @@
 ﻿using Configs;
-using Rounds;
 using Services;
 using UnityEngine;
 
 namespace ItemSystem
 {
-    public class PerfumeEffect : IEffect
+    public class CommonEffect : IEffect
     {
         private Animator _animator;
         private ItemConfig _itemConfig;
         
-        public bool IsDateActive { get; private set; }
+        public bool IsActive { get; private set; }
         
-        public PerfumeEffect(Animator animator, ItemConfig config)
+        public CommonEffect(Animator animator, ItemConfig config)
         {
             _animator = animator;
             _itemConfig = config;
@@ -28,18 +27,18 @@ namespace ItemSystem
 
         public void OnDateStart()
         {
-            IsDateActive = true;
-            CoroutineService.Instance.RunRepeatingCoroutine(PeriodicEffect, _itemConfig.repeatIntervalTime, () =>  !IsDateActive);
+            IsActive = true;
+            CoroutineService.Instance.RunRepeatingCoroutine(PeriodicEffect, _itemConfig.repeatIntervalTime, () => !IsActive);
         }
 
         public void OnDateEnd()
         {
-            IsDateActive = false;
+            IsActive = false;
         }
 
         public void PeriodicEffect()
         {
-            EventService.UpdateDateProgress(_itemConfig.effectValue);
+            EventService.Instance.OnAddPositiveEffect(_itemConfig.effectValue);
         }
     }
 }

@@ -1,41 +1,13 @@
 ﻿using System.Collections.Generic;
 using ItemSystem;
+using SaveLoadSystem;
 using UnityEngine;
 
 namespace Services
 {
-    public class InventoryService : MonoBehaviour
+    public class InventoryService : BaseServiceSingleton<InventoryService>, ISaveLoadObject
     {
-        #region SINGLETON
-        private static InventoryService _instance;
-        
-        public static InventoryService Instance
-        {
-            get
-            {
-                if (_instance == null)
-                {
-                    GameObject singletonObject = new GameObject("InventoryService");
-                    _instance = singletonObject.AddComponent<InventoryService>();
-                    DontDestroyOnLoad(singletonObject);
-                }
-                return _instance;
-            }
-        }
-
-        private void Awake()
-        {
-            if (_instance == null)
-            {
-                _instance = this;
-                Init();
-            }
-            else
-            {
-                Destroy(gameObject);
-            }
-        }
-        #endregion SINGLETON
+        public string SaveKey => "Inventory";
         
         private float _placementRadius;
         
@@ -48,10 +20,10 @@ namespace Services
         [SerializeField] private List<ItemMono> _items;
         
         public List<ItemMono> Items => _items;
-        
-        private void Init()
+
+        public override void Init()
         {
-            Debug.Log("InventoryService::Init");
+            base.Init();
             _placementRadius = ConfigService.Instance.inventoryConfig.placementRadius;
             _inventoryCapacity = ConfigService.Instance.inventoryConfig.ToDictionary();
             _itemsBySlot = new Dictionary<SlotType, List<ItemMono>>();
@@ -59,6 +31,7 @@ namespace Services
             {
                 _itemsBySlot[slotType] = new List<ItemMono>();
             }
+            Debug.Log("InventoryService initialized");
         }
         
         private void ArrangeItemsInCircle()
@@ -82,6 +55,17 @@ namespace Services
 
                 _items[i].transform.position = newPosition;
             }
+        }
+
+        public bool EquipItem(string itemId)
+        {
+            if (!ItemService.Instance.ContainsItem(itemId))
+            {
+                return false;
+            }
+            
+            EquipItem(ItemService.Instance.GetItem(itemId));
+            return true;
         }
 
         public bool EquipItem(ItemMono item)
@@ -119,5 +103,37 @@ namespace Services
             }
             return false;
         }
+
+        public object GetSaveData()
+        {
+            List<string> items = new List<string>();
+            foreach (var item in _items)
+            {
+                items.Add(item.ItemId);
+            }
+
+            return new InventorySaveData { items = items };
+        }
+
+        public void LoadFromSaveData(object data)
+        {
+            if (data is not InventorySaveData saveData)
+            {
+                Debug.LogError("Invalid save data");
+                return;
+            }
+            
+            foreach (var itemId in saveData.items)
+            {
+                ItemService.Instance.CreateItem(itemId);
+                EquipItem(ItemService.Instance.GetItem(itemId));
+            }
+        }
+    }
+    
+    [System.Serializable]
+    public class InventorySaveData
+    {
+        public List<string> items;
     }
 }

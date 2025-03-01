@@ -5,7 +5,7 @@ using UnityEngine.Serialization;
 namespace Configs
 {
     [CreateAssetMenu(menuName = "Configs/ItemConfig", fileName = "NewItemConfig")]
-    public class ItemConfig : ScriptableObject
+    public class ItemConfig : BaseConfig
     {
         [Header("Основные параметры")]
         public string itemId;

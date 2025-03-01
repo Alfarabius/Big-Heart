@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Configs
 {
     [CreateAssetMenu(menuName = "Configs/InventoryConfig", fileName = "InventoryConfig")]
-    public class InventoryConfig : ScriptableObject
+    public class InventoryConfig : BaseConfig
     {
         [Header("Укажите вместимость для каждого типа слота")]
         public SlotCapacityEntry[] slotCapacities;
