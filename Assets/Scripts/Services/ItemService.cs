@@ -1,44 +1,75 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using ItemSystem;
 using UnityEngine;
 
 namespace Services
 {
-    public class ItemService : MonoBehaviour
+    public class ItemService : BaseServiceSingleton<ItemService>
     {
-        #region SINGLETON
-        private static ItemService _instance;
+        private Dictionary<string, ItemMono> _itemsById;
+        private ItemFactory _itemFactory;
         
-        public static ItemService Instance
+        public override void Init()
         {
-            get
+            base.Init();
+            _itemsById = new Dictionary<string, ItemMono>();
+            _itemFactory = new ItemFactory();
+            IsInitialized = true;
+            Debug.Log("ItemService initialized");
+        }
+
+        public async Task<ItemMono> CreateItem(string itemId, Vector3 position = default, Transform parent = null)
+        {
+            if (_itemsById.TryGetValue(itemId, out var existingItem))
             {
-                if (_instance == null)
+                if (parent == null || existingItem.transform.parent == parent)
                 {
-                    GameObject singletonObject = new GameObject("ItemService");
-                    _instance = singletonObject.AddComponent<ItemService>();
-                    DontDestroyOnLoad(singletonObject);
+                    Debug.LogWarning($"[ItemService] Предмет {itemId} уже существует в {parent?.name ?? "сцене"}.");
+                    return existingItem;
                 }
-                return _instance;
+            }
+
+            try
+            {
+                var item = await _itemFactory.CreateItemAsync(itemId, position, parent);
+                
+                if (item == null)
+                {
+                    Debug.LogError($"[ItemService] Не удалось создать предмет {itemId}, item == null.");
+                    return null;
+                }
+
+                RegisterItem(item);
+                return item;
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"[ItemService] Ошибка создания предмета {itemId}: {e}");
+                return null;
             }
         }
 
-        private void Awake()
+        public void DestroyItem(string itemId)
         {
-            if (_instance == null)
+            if (_itemsById.TryGetValue(itemId, out var item))
             {
-                _instance = this;
-            }
-            else
-            {
-                Destroy(gameObject);
+                UnregisterItem(itemId);
+                _itemsById.Remove(itemId);
+                Destroy(item.gameObject);
+                Debug.Log($"[ItemService] Предмет {itemId} удалён.");
             }
         }
-        #endregion SINGLETON
-        
-        private static readonly Dictionary<string, ItemMono> _itemsById = new();
 
-        public void RegisterItem(ItemMono item)
+        public ItemMono GetItem(string itemId) => _itemsById.TryGetValue(itemId, out var item) ? item : null;
+
+        public bool ContainsItem(string itemId)
+        {
+            return _itemsById.ContainsKey(itemId);
+        }
+        
+        private void RegisterItem(ItemMono item)
         {
             if (item == null || string.IsNullOrEmpty(item.ItemId)) return;
 
@@ -53,33 +84,13 @@ namespace Services
             }
         }
 
-        public void UnregisterItem(string itemId)
+        private void UnregisterItem(string itemId)
         {
             if (_itemsById.TryGetValue(itemId, out ItemMono item))
             {
                 _itemsById.Remove(itemId);
                 Debug.Log($"[ItemService] Предмет {itemId} убран из списка регистраций.");
             }
-        }
-
-        public void DestroyItem(string itemId)
-        {
-            if (_itemsById.TryGetValue(itemId, out ItemMono item))
-            {
-                Object.Destroy(item.gameObject);
-                _itemsById.Remove(itemId);
-                Debug.Log($"[ItemService] Предмет {itemId} удалён.");
-            }
-        }
-
-        public ItemMono GetItem(string itemId)
-        {
-            return _itemsById.TryGetValue(itemId, out var item) ? item : null;
-        }
-
-        public bool ContainsItem(string itemId)
-        {
-            return _itemsById.ContainsKey(itemId);
         }
     }
 }

@@ -27,11 +27,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 72d6366ce74365949b4f81d422454e7a
-    m_Address: Assets/Prefabs/Items/Configs/RichPerfume.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 1d6b8df0fad24ec43a4e4969f137bb8a, type: 2}
   m_SchemaSet:
